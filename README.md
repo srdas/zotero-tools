@@ -112,8 +112,8 @@ ollama serve
 **`No JSON found in model response`**
 The model returned prose instead of the expected JSON. This can happen with very small models. Try a larger or instruction-tuned model in the config.
 
-**`Error: cannot open Zotero database`**
-Zotero is not installed, or its data directory is not at the default location `~/Zotero/`. Zotero's data directory location can be changed in *Zotero → Settings → Advanced → Files and Folders*; if you've moved it, update `ZOTERO_DB` at the top of `zotero_survey.py`.
+**`Zotero database not found at default location`**
+If your Zotero data folder is not at the default `~/Zotero/`, the tool will prompt you to enter the correct path at startup. You can find the path in *Zotero → Settings → Advanced → Files and Folders*.
 
 **Survey quality is poor**
 Switch `survey_model` to a larger model. Models with at least 8B parameters tend to produce coherent academic prose; 70B models are noticeably better.

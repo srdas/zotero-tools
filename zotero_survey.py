@@ -17,8 +17,8 @@ CONFIG_PATH   = Path(__file__).parent / "config.json"
 DEFAULT_CONFIG = {
     "ollama": {
         "host":                "http://localhost:11434",
-        "categorization_model": "llama3.2",
-        "survey_model":         "llama3.2",
+        "categorization_model": "gpt-oss",
+        "survey_model":         "gpt-oss",
     },
     "max_papers": 300,
 }
@@ -114,19 +114,39 @@ class OllamaClient:
 
 # ── Database helpers ──────────────────────────────────────────────────────────
 
-def open_db():
-    for path in [ZOTERO_DB, ZOTERO_DB_BAK]:
+def _try_open_db(db_path, bak_path):
+    for path in [db_path, bak_path]:
         if path.exists():
             try:
                 conn = sqlite3.connect(f"file:{path}?mode=ro", uri=True)
                 conn.row_factory = sqlite3.Row
                 conn.execute("SELECT 1 FROM collections LIMIT 1")
-                note = dim("  (using backup — main db locked)") if path == ZOTERO_DB_BAK else ""
+                note = dim("  (using backup — main db locked)") if path == bak_path else ""
                 return conn, note
             except sqlite3.OperationalError:
                 continue
-    print("Error: cannot open Zotero database. Is Zotero installed?")
-    sys.exit(1)
+    return None, None
+
+
+def open_db():
+    conn, note = _try_open_db(ZOTERO_DB, ZOTERO_DB_BAK)
+    if conn:
+        return conn, note
+
+    print(dim(f"  Zotero database not found at default location ({ZOTERO_DB.parent})."))
+    while True:
+        try:
+            raw = input("  Enter your Zotero data folder path: ").strip()
+        except (EOFError, KeyboardInterrupt):
+            print("\nBye.")
+            sys.exit(0)
+        folder = Path(raw).expanduser().resolve()
+        db  = folder / "zotero.sqlite"
+        bak = folder / "zotero.sqlite.bak"
+        conn, note = _try_open_db(db, bak)
+        if conn:
+            return conn, note
+        print(dim(f"  No readable Zotero database found in '{folder}'. Try again."))
 
 
 def get_collections(conn):
