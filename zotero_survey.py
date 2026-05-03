@@ -12,7 +12,7 @@ from pathlib import Path
 
 ZOTERO_DB     = Path.home() / "Zotero" / "zotero.sqlite"
 ZOTERO_DB_BAK = Path.home() / "Zotero" / "zotero.sqlite.bak"
-CONFIG_PATH   = Path.home() / ".config" / "zotero_survey" / "config.json"
+CONFIG_PATH   = Path(__file__).parent / "config.json"
 
 DEFAULT_CONFIG = {
     "ollama": {
@@ -28,7 +28,6 @@ DEFAULT_CONFIG = {
 
 def load_config():
     if not CONFIG_PATH.exists():
-        CONFIG_PATH.parent.mkdir(parents=True, exist_ok=True)
         CONFIG_PATH.write_text(json.dumps(DEFAULT_CONFIG, indent=2) + "\n")
         print(dim(f"  Created default config at {CONFIG_PATH}"))
     with CONFIG_PATH.open() as f:

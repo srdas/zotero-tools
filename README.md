@@ -48,13 +48,13 @@ chmod +x ~/zotero_survey.py
 python3 ~/zotero_survey.py
 ```
 
-On first run the config file is created automatically at `~/.config/zotero_survey/config.json`.
+On first run the config file is created automatically at `config.json` in the same directory as `zotero_survey.py`.
 
 ---
 
 ## Configuration
 
-`~/.config/zotero_survey/config.json`
+`config.json` (same directory as `zotero_survey.py`)
 
 ```json
 {
