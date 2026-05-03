@@ -390,41 +390,55 @@ def main():
             if 1 <= i <= sample_size
         ]
 
-    # ── Display categories ────────────────────────────────────────────────────
-    print()
-    print(hr())
-    print(f"  {bold('Categories in')} {bold(yellow(sel_name))}\n")
-    for i, cat in enumerate(categories, 1):
-        count = len(cat["items"])
-        print(f"  {cyan(str(i).rjust(2))}.  {bold(cat['name'])}  {dim(f'({count} papers)')}")
-        print(dim(f"       {cat['description']}"))
-    print(hr())
+    # ── Category survey loop ──────────────────────────────────────────────────
+    surveyed = set()
+    while True:
+        print()
+        print(hr())
+        print(f"  {bold('Categories in')} {bold(yellow(sel_name))}\n")
+        for i, cat in enumerate(categories, 1):
+            count = len(cat["items"])
+            done  = dim("  ✓") if i in surveyed else ""
+            print(f"  {cyan(str(i).rjust(2))}.  {bold(cat['name'])}  {dim(f'({count} papers)')}{done}")
+            print(dim(f"       {cat['description']}"))
+        print(hr())
 
-    choice2 = prompt_int(f"Select a category to survey [1–{len(categories)}]:", 1, len(categories))
-    sel_cat = categories[choice2 - 1]
+        choice2 = prompt_int(f"Select a category to survey [1–{len(categories)}]:", 1, len(categories))
+        sel_cat = categories[choice2 - 1]
+        surveyed.add(choice2)
 
-    print()
-    print(hr())
-    print(f"  {bold('SURVEY:')} {bold(yellow(sel_cat['name']))}")
-    print(hr())
-    print(dim(f"  {sel_cat['description']}"))
-    print(dim(f"  {len(sel_cat['items'])} papers  |  model: {sur_model}"))
-    print()
+        print()
+        print(hr())
+        print(f"  {bold('SURVEY:')} {bold(yellow(sel_cat['name']))}")
+        print(hr())
+        print(dim(f"  {sel_cat['description']}"))
+        print(dim(f"  {len(sel_cat['items'])} papers  |  model: {sur_model}"))
+        print()
 
-    generate_survey(client, sur_model, sel_cat["name"], sel_cat["description"], sel_cat["items"])
+        generate_survey(client, sur_model, sel_cat["name"], sel_cat["description"], sel_cat["items"])
 
-    # ── Paper list ────────────────────────────────────────────────────────────
-    print()
-    print(hr())
-    print(f"  {bold('Papers in this category:')}\n")
-    for p in sel_cat["items"]:
-        authors = ", ".join(p["authors"][:2])
-        if len(p["authors"]) > 2:
-            authors += " et al."
-        year = p["date"] or "n.d."
-        print(f"  • {wrap(p['title'], width=60, indent=6).lstrip()}")
-        print(dim(f"      {authors}, {year}"))
-    print()
+        # ── Paper list ────────────────────────────────────────────────────────
+        print()
+        print(hr())
+        print(f"  {bold('Papers in this category:')}\n")
+        for p in sel_cat["items"]:
+            authors = ", ".join(p["authors"][:2])
+            if len(p["authors"]) > 2:
+                authors += " et al."
+            year = p["date"] or "n.d."
+            print(f"  • {wrap(p['title'], width=60, indent=6).lstrip()}")
+            print(dim(f"      {authors}, {year}"))
+        print()
+
+        print(hr())
+        try:
+            again = input(f"  Survey another category? [y/N]: ").strip().lower()
+        except (EOFError, KeyboardInterrupt):
+            print("\nBye.")
+            sys.exit(0)
+        if again not in ("y", "yes"):
+            print()
+            break
 
 
 if __name__ == "__main__":
