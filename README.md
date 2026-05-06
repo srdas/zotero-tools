@@ -39,7 +39,7 @@ Any model available in Ollama works. Larger models (e.g. `llama3.1:70b`, `mistra
 **2. Make the script executable**
 
 ```bash
-chmod +x ~/zotero_survey.py
+chmod a+x ~/zotero_survey.py
 ```
 
 **3. Run it**
