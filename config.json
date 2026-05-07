@@ -1,8 +1,8 @@
 {
   "ollama": {
     "host": "http://localhost:11434",
-    "categorization_model": "gpt-oss",
-    "survey_model": "gpt-oss"
+    "categorization_model": "llama3.2",
+    "survey_model": "llama3.2"
   },
   "max_papers": 300
 }
