@@ -31,10 +31,10 @@ No cloud API keys required. All inference runs locally.
 
 ```bash
 # Install from https://ollama.com, then:
-ollama pull gpt-oss
+ollama pull llama3.2
 ```
 
-Any model available in Ollama works. Larger models (e.g. `llama3.1:70b`, `mistral`, `deepseek-r1`) produce better surveys but are slower.
+Any model available in Ollama works. Larger models (e.g. `llama3.1:70b`, `mistral`, `llama3.2`, `deepseek-r1`) produce better surveys but are slower. I find `gpt-oss` is slow but gives good results. 
 
 **2. Make the script executable**
 
@@ -60,8 +60,8 @@ On first run the config file is created automatically at `config.json` in the sa
 {
   "ollama": {
     "host": "http://localhost:11434",
-    "categorization_model": "gpt-oss",
-    "survey_model": "gpt-oss"
+    "categorization_model": "llama3.2",
+    "survey_model": "llama3.2"
   },
   "max_papers": 300
 }
@@ -80,7 +80,7 @@ You can use **different models for each task**, e.g. a small model for fast cate
 {
   "ollama": {
     "host": "http://localhost:11434",
-    "categorization_model": "gpt-oss",
+    "categorization_model": "llama3.2",
     "survey_model": "llama3.1:70b"
   },
   "max_papers": 300
